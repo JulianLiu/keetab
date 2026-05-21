@@ -31,12 +31,15 @@ function ensureHost() {
   if (host) return;
   host = document.createElement('div');
   host.style.all = 'initial';
+  host.style.position = 'fixed';
+  host.style.inset = '0';
+  host.style.zIndex = '2147483647';
   host.id = 'keepass-userscript-root';
   shadow = host.attachShadow({ mode: 'closed' });
   const style = document.createElement('style');
   style.textContent = stylesCss;
   shadow.appendChild(style);
-  document.documentElement.appendChild(host);
+  document.body.appendChild(host);
   // Listen for session changes
   session.on((ev) => {
     if (!isOpen()) return;
