@@ -1,0 +1,24 @@
+// ==UserScript==
+// @name         KeeTab
+// @namespace    https://github.com/julianliu/keetab
+// @version      0.1.0
+// @description  Read-only KeePass password manager backed by a public KDBX URL. Decrypts in memory, exposes search/copy/TOTP via a shadow-DOM panel.
+// @author       julianliu
+// @match        *://*/*
+// @run-at       document-idle
+// @grant        GM_xmlhttpRequest
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_deleteValue
+// @grant        GM_listValues
+// @grant        GM_registerMenuCommand
+// @grant        GM_unregisterMenuCommand
+// @grant        GM_notification
+// @grant        GM_setClipboard
+// @grant        GM_addValueChangeListener
+// @grant        GM_removeValueChangeListener
+// @grant        unsafeWindow
+// @connect      *
+// @require      https://cdn.jsdelivr.net/npm/kdbxweb@2.1.1/dist/kdbxweb.js
+// @noframes
+// ==/UserScript==
