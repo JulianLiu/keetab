@@ -2,7 +2,7 @@
 
 A Tampermonkey userscript that turns a publicly-hosted `.kdbx` file into a
 read-only password manager available on every page you visit. Inspired by the
-[Tusk](./Tusk) Chrome extension and reuses its KDBX parsing, URL ranking and
+[Tusk](https://github.com/subdavis/Tusk) Chrome extension and reuses its KDBX parsing, URL ranking and
 TOTP algorithms.
 
 ## Documentation
