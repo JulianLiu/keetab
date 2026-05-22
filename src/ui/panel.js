@@ -20,6 +20,7 @@ let viewState = {
 let unlockHandler = null; // injected from main.js to actually unlock
 let adoptHandler = null;  // injected from main.js to silently decrypt with shared pwd
 let onSyncRequested = null;
+let previouslyFocusedElement = null;
 
 export function configure({ onUnlock, onAdopt, onSync }) {
   unlockHandler = onUnlock;
@@ -34,6 +35,8 @@ function ensureHost() {
   host.style.position = 'fixed';
   host.style.inset = '0';
   host.style.zIndex = '2147483647';
+  host.style.pointerEvents = 'none';
+  host.hidden = true;
   host.id = 'keepass-userscript-root';
   shadow = host.attachShadow({ mode: 'closed' });
   const style = document.createElement('style');
@@ -72,6 +75,8 @@ export function isOpen() { return isPanelOpen; }
 
 export function openPanel({ view } = {}) {
   ensureHost();
+  if (!isPanelOpen) rememberFocusedElement();
+  host.hidden = false;
   isPanelOpen = true;
   if (view) {
     viewState.view = view;
@@ -107,10 +112,14 @@ function startAdoption(pwd) {
 export function closePanel() {
   if (!host) return;
   isPanelOpen = false;
+  const active = shadow.activeElement;
+  if (active && typeof active.blur === 'function') active.blur();
   // Clear panel DOM (but keep host + style)
   for (const child of Array.from(shadow.children)) {
     if (child.tagName !== 'STYLE') child.remove();
   }
+  host.hidden = true;
+  restoreFocusedElement();
 }
 
 export function togglePanel() {
@@ -147,6 +156,28 @@ function render() {
   setTimeout(() => {
     const f = shadow.querySelector('input[autofocus]');
     if (f) f.focus();
+  }, 0);
+}
+
+function rememberFocusedElement() {
+  const active = document.activeElement;
+  if (!active || active === document.body || active === document.documentElement || active === host) {
+    previouslyFocusedElement = null;
+    return;
+  }
+  previouslyFocusedElement = active;
+}
+
+function restoreFocusedElement() {
+  const el = previouslyFocusedElement;
+  previouslyFocusedElement = null;
+  if (!el || !el.isConnected || typeof el.focus !== 'function') return;
+  setTimeout(() => {
+    try {
+      el.focus({ preventScroll: true });
+    } catch {
+      try { el.focus(); } catch {}
+    }
   }, 0);
 }
 
